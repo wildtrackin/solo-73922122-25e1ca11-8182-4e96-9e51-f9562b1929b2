@@ -1,0 +1,12 @@
+# 本地 Python 环境（容器内通过 requirements.txt 安装）
+.venv/
+.pylibs/
+
+# Python 缓存
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 系统与编辑器
+.DS_Store
+*.egg-info/

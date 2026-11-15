@@ -1,0 +1,9 @@
+edge_id,from_intersection_id,to_intersection_id,length_m
+E1,A,B,100
+E2,B,C,100
+E3,A,D,130
+E4,D,C,130
+E5,C,F,100
+E6,B,D,85
+E7,E,A,100
+E8,F,C,100

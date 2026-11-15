@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>巡检定位转路段序列</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<main class="container">
+  <header>
+    <h1>巡检定位 → 路段序列</h1>
+    <p class="subtitle">
+      上传路口、单向路段、巡检定位三份 UTF-8 CSV，系统在可行吸附方案中取平方距离总和最小者；
+      路口序列或最短路段序列不唯一时标记<strong>待核</strong>且不导出。
+    </p>
+  </header>
+
+  <section class="card">
+    <h2>1. 输入文件与参数</h2>
+    <form id="solve-form">
+      <div class="grid">
+        <label class="field">
+          <span>路口 CSV（≤ 20 个，列：intersection_id,x,y）</span>
+          <input type="file" name="intersections" accept=".csv,text/csv" required />
+        </label>
+        <label class="field">
+          <span>路段 CSV（≤ 40 条，列：edge_id,from_intersection_id,to_intersection_id,length_m）</span>
+          <input type="file" name="edges" accept=".csv,text/csv" required />
+        </label>
+        <label class="field">
+          <span>定位 CSV（2~8 个严格递增点，列：timestamp_utc,x,y）</span>
+          <input type="file" name="track" accept=".csv,text/csv" required />
+        </label>
+        <label class="field">
+          <span>吸附半径（非负整数，米）</span>
+          <input type="number" name="snap_radius" min="0" step="1" value="20" required />
+        </label>
+        <label class="field">
+          <span>最高速度（正整数，米/秒）</span>
+          <input type="number" name="max_speed" min="1" step="1" value="15" required />
+        </label>
+      </div>
+      <div class="actions">
+        <button type="submit" id="submit-btn">求解</button>
+        <button type="button" id="sample-btn" class="secondary">填充示例数据</button>
+      </div>
+    </form>
+    <details class="format-help">
+      <summary>输入格式说明</summary>
+      <ul>
+        <li>三份文件均为 UTF-8 编码（允许 BOM），首行为表头，列名与顺序必须与提示一致。</li>
+        <li>坐标为平面米坐标，支持整数与小数；路段长度为正整数米。</li>
+        <li>定位点按 UTC 秒记录，时间戳必须为严格递增整数。</li>
+        <li>每个定位点仅匹配吸附半径内的路口；相邻匹配路口之间须存在有向最短路，
+          且路长不超过时间差 × 最高速度。</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="card" id="result-card" hidden>
+    <h2>2. 求解结果</h2>
+    <div id="result-body"></div>
+  </section>
+
+  <section class="card" id="error-card" hidden>
+    <h2>输入无效或不可行</h2>
+    <div id="error-body" class="error-box"></div>
+    <p class="note">未产生任何结果文件。</p>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
